@@ -1,4 +1,6 @@
-# The scripts in this folder relate to Nutanix management
+# Nutanix Scripts
+
+The scripts in this folder relate to Nutanix management
 
 ## configurevcenter.ps1
 
