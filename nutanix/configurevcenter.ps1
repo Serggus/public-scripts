@@ -16,7 +16,7 @@ $viUser = "root"
 $viPassword = "vmware"
 
 $esxUser = "root"
-$esxPassword = "nutanix/4u"
+$esxPassword = "<add ESX password here>"
 
 $dcName = "NTNX-DC"
 $clusterName = "NTNX-Cluster"
