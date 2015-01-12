@@ -1,0 +1,7 @@
+{
+	"cvm_address" : "<ip address>",
+	"cvm_port" : "9440",
+	"username" : "username",
+	"password" : "password",
+	"timeout" : 10
+}
