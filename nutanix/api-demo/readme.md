@@ -30,14 +30,14 @@ A successful example run against a Nutanix node running NOS 4.0.2.2 will look li
 
 ----- output starts -----
 
-Tiny API demo
+	Tiny API demo
 
-Cluster ID: 00050bf9-b19a-878c-0000-000000001522::5410
-Cluster name: NTNX-Demo
-Timezone: Australia/Melbourne
-Nodes: 3
-Shadow clones enabled?: No
+	Cluster ID: 00050bf9-b19a-878c-0000-000000001522::5410
+	Cluster name: NTNX-Demo
+	Timezone: Australia/Melbourne
+	Nodes: 3
+	Shadow clones enabled?: No
 
-etc ...
+	etc ...
 
 ----- output ends -----
