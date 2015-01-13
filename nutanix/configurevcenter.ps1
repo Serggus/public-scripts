@@ -11,22 +11,36 @@
 #                                                    #
 ######################################################
 
+# vCenter IP address and credentials
+# Script default is vCenter default i.e. "root" and "vmware"
+
 $viServer = "10.10.10.72"
 $viUser = "root"
 $viPassword = "vmware"
 
+# ESX credentials
+
 $esxUser = "root"
 $esxPassword = "<esx password>"
 
+# vSphere Datacenter and Cluster names
+
 $dcName = "NTNX-DC"
 $clusterName = "NTNX-Cluster"
+
+# DNS server address
 
 $dnsIP = "10.10.10.230"
 
 # The NTP servers below will be *removed* from the VM Hosts
 
 $ntpServersToRemove = @( "10.10.10.230", "0.north-america.pool.ntp.org", "1.north-america.pool.ntp.org", "2.north-america.pool.ntp.org", "3.north-america.pool.ntp.org" )
+
+# The NTP servers below will be added to the VM hosts
+
 $ntpServersToAdd = @("10.10.10.230")
+
+# Default gateway and DNS domain name to apply to the hosts
 
 $gwIP = "10.10.10.1"
 $domain = "ntnxdemo.local"
@@ -46,6 +60,8 @@ $HAMemPercent = 33
 # Note that das.ignoreRedundantNetWarning is set because many Nutanix SE blocks are connected with single 1GbE only during demos (e.g. mine)
 
 $advancedSettings = @("das.ignoreRedundantNetWarning", "das.ignoreInsufficientHbDatastore")
+
+# List of hosts to add to the new cluster
 
 $vmHosts = @("10.10.10.20", "10.10.10.21", "10.10.10.22" )
 
@@ -67,7 +83,7 @@ if( -Not $dc )
 	New-Datacenter -Location (Get-Folder -NoRecursion | New-Folder -Name Nutanix) -Name $dcName
 }
 
-# Create Nutanix vSphere Cluster
+# Create Nutanix vSphere Cluster, if it doesn't already exist
 # This doesn't configure DRS or HA, yet
 
 $cluster = Get-Cluster $clusterName -ErrorAction SilentlyContinue
@@ -90,8 +106,8 @@ $spec.dasConfig.admissionControlPolicy.memoryFailoverResourcesPercent = $HAMemPe
 $Cluster = Get-View (Get-Cluster -Name $clusterName)
 $Cluster.ReconfigureComputeResource_Task( $spec, $true )
 
-
 # Configure HA advanced settings
+# Note that additional HA Advanced Settings can be specified above
 
 foreach( $advancedSetting in $advancedSettings )
 {
@@ -107,21 +123,39 @@ foreach( $advancedSetting in $advancedSettings )
 
 foreach( $vmHost in $vmHosts )
 {
+    # Check to see if the host is already in the cluster
+
 	$hostTest = Get-VMHost -Location $dcName $vmHost -ErrorAction SilentlyContinue
 	if( -Not $hostTest )
 	{
-		
+        # Add hosts to the new cluster		
+
 		Add-VMHost $vmHost -Location (Get-Cluster -Name $clusterName) -User $esxUser -Password $esxPassword -Force
 		$vmHostNetworkInfo = Get-VMHostNetwork -Host $vmHost
+
+        # Set the host network configuration
+
 		Set-VMHostNetwork -Network $vmHostNetworkInfo -VMKernelGateway $gwIP -Domain $domain -DNSFromDHCP $false -DNSAddress $dnsIP
+
+        # Remove all NTP servers specified in the array above
+        # Ensures clean configuration
+
 		foreach( $ntpServer in $ntpServersToRemove )
 		{
 			Remove-VMHostNtpServer -NtpServer $ntpServer -VMHost $vmHost -Confirm:$false -ErrorAction SilentlyContinue
 		}
+
+        # Add new NTP servers specified in array above
+
 		foreach( $ntpServer in $ntpServersToAdd )
 		{
 			Add-VMHostNTPServer -NtpServer $ntpServer -VMHost $vmHost
 		}
+
+        # Check to see if Lockdown mode is enabled on the host
+        # If it is, disable it
+        # Note that check needs to happen first as disabling Lockdown mode command fails if Lockdown is already disabled
+
 		if( ( Get-VMHost $vmHost | Get-View ).Config.AdminDisabled )
 		{
 			(Get-VMHost $vmHost | Get-View).ExitLockdownMode()
@@ -137,7 +171,9 @@ $cvms = Get-VM | where { $_.Name -match "CVM" }
 foreach( $cvm in $cvms )
 {
 	Set-VM $cvm.Name -HARestartPriority Disabled -HAIsolationResponse DoNothing -DRSAutomationLevel Disabled -Confirm:$false
-    # Disable VM monitoring
+
+    # Disable VM monitoring on the CVMs only (doesn't touch any other VMs)
+
     $spec = New-Object VMware.Vim.ClusterConfigSpecEx
     $spec.dasVmConfigSpec = New-Object VMware.Vim.ClusterDasVmConfigSpec
     $spec.dasVmConfigSpec[0].operation = "edit"
