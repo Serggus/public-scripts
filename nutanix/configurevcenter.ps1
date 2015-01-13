@@ -16,7 +16,7 @@ $viUser = "root"
 $viPassword = "vmware"
 
 $esxUser = "root"
-$esxPassword = "<add ESX password here>"
+$esxPassword = "nutanix/4u"
 
 $dcName = "NTNX-DC"
 $clusterName = "NTNX-Cluster"
@@ -137,6 +137,20 @@ $cvms = Get-VM | where { $_.Name -match "CVM" }
 foreach( $cvm in $cvms )
 {
 	Set-VM $cvm.Name -HARestartPriority Disabled -HAIsolationResponse DoNothing -DRSAutomationLevel Disabled -Confirm:$false
+    # Disable VM monitoring
+    $spec = New-Object VMware.Vim.ClusterConfigSpecEx
+    $spec.dasVmConfigSpec = New-Object VMware.Vim.ClusterDasVmConfigSpec
+    $spec.dasVmConfigSpec[0].operation = "edit"
+    $spec.dasVmConfigSpec[0].info = New-Object VMware.Vim.ClusterDasVmConfigInfo
+    $spec.dasVmConfigSpec[0].info.key = New-Object VMware.Vim.ManagedObjectReference
+    $spec.dasVmConfigSpec[0].info.key.value = $cvm.ExtensionData.MoRef.Value
+    $spec.dasVmConfigSpec[0].info.dasSettings = New-Object VMware.Vim.ClusterDasVmSettings
+    $spec.dasVmConfigSpec[0].info.dasSettings.vmToolsMonitoringSettings = New-Object VMware.Vim.ClusterVmToolsMonitoringSettings
+    $spec.dasVmConfigSpec[0].info.dasSettings.vmToolsMonitoringSettings.enabled = $false
+    $spec.dasVmConfigSpec[0].info.dasSettings.vmToolsMonitoringSettings.vmMonitoring = "vmMonitoringDisabled"
+    $spec.dasVmConfigSpec[0].info.dasSettings.vmToolsMonitoringSettings.clusterSettings = $false
+    $_this = Get-View -Id $cvm.VMHost.Parent.Id
+    $_this.ReconfigureComputeResource_Task( $spec, $true )
 }
 
 # Disconnect from the vCenter server
