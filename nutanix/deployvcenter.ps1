@@ -40,6 +40,11 @@ $dataStore = Get-Datastore -Name "$datastoreName"
 
 Import-VApp -Source $vAppFilename -VMHost $esxHost -Datastore $dataStore -Name "$vAppName"
 
+# Start the vCenter VM
+
+$vCenter = Get-VM | where { $_.Name -Match "$vAppName" }
+Start-VM $vCenter
+
 # Disconnect from the Host
 
 Disconnect-VIServer -Confirm:$false
