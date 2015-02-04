@@ -14,10 +14,10 @@
 
 /**
 	*
-	* 2014.12.02
-	* The default CVM settings are for POC03
+	* 2015.02.03 PST
+	* The default CVM settings are for demo cluster
 	*
-	* You'll need a Nutanix VPN connection for them to work, or change the CVM IP address & credentials to match your block
+	* VPN connection required if you're using a Nutanix internal demo cluster
 	*
 */
 
