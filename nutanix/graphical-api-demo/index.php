@@ -87,7 +87,6 @@
                             </div>
                             <div class="panel-body">
                                 Shadow Clones Enabled: <span id="cluster-shadow-clones"></span><br>
-                                Hypervisor Types: <br>
                                 Self-encrypting drives installed? <span id="sed"></span><br>
                             </div>
                         </div>
