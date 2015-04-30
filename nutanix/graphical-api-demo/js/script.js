@@ -53,6 +53,9 @@ $(document).ready(function(){
                     $( 'span#nos').html( data.nosVersion ),
                     $( 'span#hypervisors').html('');
 
+                    $( 'span#ssd_graph').html( '<img src="/ajax/charts/' + data.ssdGraph + '">' );
+                    $( 'span#hdd_graph').html( '<img src="/ajax/charts/' + data.hddGraph + '">' );
+
                     $( data.hypervisorTypes ).each( function( index, item ) {
                         switch( item )
                         {

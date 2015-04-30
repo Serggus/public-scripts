@@ -7,7 +7,7 @@ The graphical version shows a bit more information about the cluster used in the
 ## Prerequisites
 
 - PHP >= 5.4 (required for local web server support)
-- A connection to a Nutanix cluster
+- A connection to a Nutanix cluster running NOS >= 4.1 (stats objects were different before 4.1)
 - Credentials for the relevant Nutanix cluster (read-only is fine)
 - A recent web browser
 
@@ -17,3 +17,19 @@ The graphical version shows a bit more information about the cluster used in the
 - Run 'php -S localhost:8000' (change the web server's port, if necessary)
 - Browse to http://localhost:8000/ (and change the port, if you altered it in the previous step)
 
+## What will it do?
+
+- Collect some basic info from the CVM IP address you specified
+- Create a couple of PNG files in {app_home}/ajax/charts that show SSD & HDD utilisation
+
+## Updates
+
+2015.04.15
+
+- Text storage removed
+- Graphs added to show SSD and HDD tier usage vs capacity
+- More of a 'dashboard' look, with high-level configuration info in the top panel
+
+## Testing
+
+This demo has been tested using NOS versions from 4.1 to 4.1.2.  It does *not* work with NOS 4.0.x anymore.  Sorry.

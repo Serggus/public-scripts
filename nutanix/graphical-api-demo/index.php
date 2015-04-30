@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/smoothness/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/master.css">
     <title>Graphical Nutanix API Demo</title>
 </head>
 
@@ -35,7 +36,7 @@
                     </div>
                     <div class='col-md-2'>
                         <label for="cluster-password">Cluster Password</label>
-                        <input class="form-control" type="text" name="cluster-password" id="cluster-password" />
+                        <input class="form-control" type="password" name="cluster-password" id="cluster-password" />
                     </div>
                     <div class='col-md-2'>
                         <label for="cluster-timeout">Timeout (Seconds)</label>
@@ -51,44 +52,49 @@
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-8 col-md-offset-2">
 
-                    <div id="clusterDetails" style="display: none;">
+                    <div id="clusterDetails" class="none">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Cluster Details</h3>
+                                <h3 class="panel-title">Cluster Details [ <span id="cluster-name"></span> | <span id="cluster-id"></span> ]</h3>
                             </div>
                             <div class="panel-body">
-                                Cluster ID: <span id="cluster-id"></span><br>
-                                Cluster Name: <span id="cluster-name"></span><br>
-                                Cluster Time Zone: <span id="cluster-timezone"></span><br>
-                                Cluster Nodes: <span id="cluster-nodes"></span><br>
-                                First block's serial number: <span id="block-sn"></span><br>
+                                <div class="row">
+                                    <div class="col-md-4 item-header">NOS Version</div>
+                                    <div class="col-md-4 item-header">Nodes</div>
+                                    <div class="col-md-4 item-header">Hypervisor(s)</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 item-content"><span id="nos"></span></div>
+                                    <div class="col-md-4 item-content"><span id="cluster-nodes"></span></div>
+                                    <div class="col-md-4 item-content"><span id="hypervisors"></span></div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Cluster Configuration</h3>
+                                <h3 class="panel-title">Cluster Storage [ Currently doing <span id="iops"></span> ]</h3>
+                            </div>
+                            <div class="panel-body">
+                                <span id="ssd_graph"></span>
+                                <span id="hdd_graph"></span>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Cluster Configuration [ <span id="cluster-ip"></span> ]</h3>
                             </div>
                             <div class="panel-body">
                                 Shadow Clones Enabled: <span id="cluster-shadow-clones"></span><br>
-                                Cluster IP: <span id="cluster-ip"></span><br>
-                                Nutanix OS version: <span id="nos"></span><br>
-                                Hypervisor Types: <span id="hypervisors"></span><br>
+                                Hypervisor Types: <br>
                                 Self-encrypting drives installed? <span id="sed"></span><br>
                             </div>
                         </div>
 
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Stats</h3>
-                            </div>
-                            <div class="panel-body">
-                                Current IOPS: <span id="iops"></span><br>
-                            </div>
-                        </div>
                     </div>
 
-                    <div id="clusterError" class="panel panel-default ui-state-error" style="display: none;">
+                    <div id="clusterError" class="panel panel-default ui-state-error none">
                         <div class="panel-heading">
                             <h3 class="panel-title">Cluster Error</h3>
                         </div>
@@ -106,6 +112,14 @@
             <p class="h3">How do I use this demo?</p>
             <br>
             <p>Simple!&nbsp;&nbsp;Just plug your CVM details and credentials into the tab labelled &quot;API Demo&quot;, hit the Go! button and let the demo page do the rest.</p>
+            <p class="h3">What do I need?</p>
+            <br>
+            <p>
+                &raquo;&nbsp;PHP >= 5.4 (you've probably already got it if you're reading this page)<br>
+                &raquo;&nbsp;A connection to a Nutanix cluster running NOS >= 4.1 (stats objects were different before 4.1)<br>
+                &raquo;&nbsp;Credentials for the relevant Nutanix cluster (read-only is fine)<br>
+                &raquo;&nbsp;A recent web browser
+            </p>
             <p class="h3">What if ... ?</p>
             <br>
             <p>
@@ -121,7 +135,7 @@
     </div>
 </div>
 
-<div id="dialog_no_cvm_address" style="display: none;">
+<div id="dialog_no_cvm_address" class="none">
     <p class="h2">Awww!</p>
     <p>The CVM address is required for this demo to run.&nbsp;&nbsp;Please close this dialog, enter a valid CVM address then try again.</p>
 </div>

@@ -1,7 +1,7 @@
 {
-	"cvm_address" : "<ip address>",
+	"cvm_address" : "10.10.10.30",
 	"cvm_port" : "9440",
-	"username" : "username",
-	"password" : "password",
+	"username" : "admin",
+	"password" : "admin",
 	"timeout" : 10
 }
