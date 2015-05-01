@@ -19,12 +19,17 @@ The graphical version shows a bit more information about the cluster used in the
 
 ## What will it do?
 
-- Collect some basic info from the CVM IP address you specified
+- Collect some basic info from the CVM or cluster IP address you specified
 - Create a couple of PNG files in {app_home}/ajax/charts that show SSD & HDD utilisation
 
 ## Updates
 
-2015.04.15
+2015.05.01
+
+- Container info added
+- A bit of code cleanup, mostly in script.js for JSON response processing
+
+2015.04.30
 
 - Text storage removed
 - Graphs added to show SSD and HDD tier usage vs capacity

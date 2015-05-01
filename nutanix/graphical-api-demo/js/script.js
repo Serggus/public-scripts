@@ -30,9 +30,9 @@ $(document).ready(function(){
             var form = $( '#config-form' );
             var serializedData = form.serialize();
 
-            /* Submit he request via AJAX */
+            /* Submit the request via AJAX */
             request = $.ajax({
-                url: "/ajax/do-the-demo.php",
+                url: "/ajax/ajaxAPI.php",
                 type: "post",
                 dataType: "json",
                 data: serializedData
@@ -41,21 +41,30 @@ $(document).ready(function(){
             request.success( function(data) {
                 if( data.result == 'ok' )
                 {
-                    $( '#clusterError' ).slideUp( 300 );
-                    $( 'span#cluster-id').html( data.id );
-                    $( 'span#cluster-name').html( data.name );
-                    $( 'span#cluster-timezone').html( data.timezone );
-                    $( 'span#cluster-nodes').html( data.numNodes);
-                    $( 'span#cluster-shadow-clones').html( data.enableShadowClones );
 
-                    $( 'span#block-sn').html( data.blockZeroSn ),
-                    $( 'span#cluster-ip').html( data.clusterIP ),
-                    $( 'span#nos').html( data.nosVersion ),
-                    $( 'span#hypervisors').html('');
+                    $( '#clusterError' ).slideUp( 300 );
+
+                    var dataFields = {
+                        id: { id: 'cluster-id' },
+                        name: { id: 'cluster-name' },
+                        timezone: { id: 'cluster-timezone' },
+                        nodes: { id: 'cluster-numNodes' },
+                        sc: { id: 'cluster-enableShadowClones' },
+                        sn: { id: 'cluster-blockZeroSn' },
+                        ip: { id: 'cluster-IP' },
+                        nos: { id: 'cluster-nosVersion' },
+                        sed: { id: 'cluster-hasSED' },
+                        iops: { id: 'cluster-numIOPS' }
+                    };
+
+                    $.each( dataFields, function( key, field ) {
+                        $( 'span#' + field.id ).html( data[ field.id ] );
+                    });
 
                     $( 'span#ssd_graph').html( '<img src="/ajax/charts/' + data.ssdGraph + '">' );
                     $( 'span#hdd_graph').html( '<img src="/ajax/charts/' + data.hddGraph + '">' );
 
+                    $( 'span#hypervisors').html( '' );
                     $( data.hypervisorTypes ).each( function( index, item ) {
                         switch( item )
                         {
@@ -71,8 +80,16 @@ $(document).ready(function(){
                         }
                     });
 
-                    $( 'span#sed').html( data.hasSED),
-                    $( 'span#iops' ).html( data.numIOPS ),
+                    $( 'table#containers' ).html( '' ).html( '<tr><td>Name</td><td>RF</td><td>Compression</td><td>Comp. Delay (Minutes)</td><td>Space Saved</td><td>RAM/SSD Dedupe?</td><td>HDD Dedupe?</td></tr>' );
+                    $( data.containers ).each( function( index, item ) {
+                        $( 'table#containers tr:first' ).after(
+                            '<tr><td>'+ item.name + '</td><td>' + item.replicationFactor + '</td>'
+                            + ( item.compressionEnabled ? ( '<td>Yes</td><td>' + ( item.compressionDelay / 60 ) + '</td><td>' + item.compressionSpaceSaved + '</td>' ) : ( '<td>No</td><td>-</td><td>-</td>' ) )
+                            + '<td>' + ( item.fingerprintOnWrite ? 'Yes' : 'No' ) + '</td>'
+                            + '<td>' + ( item.onDiskDedup ? 'Yes' : 'No' ) + '</td>'
+                            + '</tr>'
+                        );
+                    });
 
                     $( '#clusterDetails' ).slideDown( 300 );
                 }

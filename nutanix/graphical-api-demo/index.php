@@ -64,8 +64,8 @@
                                     <div class="col-md-4 item-header">Hypervisor(s)</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4 item-content"><span id="nos"></span></div>
-                                    <div class="col-md-4 item-content"><span id="cluster-nodes"></span></div>
+                                    <div class="col-md-4 item-content"><span id="cluster-nosVersion"></span></div>
+                                    <div class="col-md-4 item-content"><span id="cluster-numNodes"></span></div>
                                     <div class="col-md-4 item-content"><span id="hypervisors"></span></div>
                                 </div>
                             </div>
@@ -73,21 +73,34 @@
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Cluster Storage [ Currently doing <span id="iops"></span> ]</h3>
+                                <h3 class="panel-title">Cluster Storage [ Currently doing <span id="cluster-numIOPS"></span> ]</h3>
                             </div>
                             <div class="panel-body">
                                 <span id="ssd_graph"></span>
                                 <span id="hdd_graph"></span>
                             </div>
+                            <table class="table" id="containers">
+                                <tr>
+                                    <td>Name</td>
+                                    <td>RF</td>
+                                    <td>Compression</td>
+                                    <td>Comp. Delay (Minutes)</td>
+                                    <td>Space Saved</td>
+                                    <td>RAM/SSD Dedupe?</td>
+                                    <td>HDD Dedupe?</td>
+                                </tr>
+                            </table>
                         </div>
+
+
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Cluster Configuration [ <span id="cluster-ip"></span> ]</h3>
+                                <h3 class="panel-title">Cluster Configuration [ <span id="cluster-IP"></span> ]</h3>
                             </div>
                             <div class="panel-body">
-                                Shadow Clones Enabled: <span id="cluster-shadow-clones"></span><br>
-                                Self-encrypting drives installed? <span id="sed"></span><br>
+                                Shadow Clones Enabled: <span id="cluster-enableShadowClones"></span><br>
+                                Self-encrypting drives installed? <span id="cluster-hasSED"></span><br>
                             </div>
                         </div>
 
@@ -110,7 +123,7 @@
         <div id="tabs-help">
             <p class="h3">How do I use this demo?</p>
             <br>
-            <p>Simple!&nbsp;&nbsp;Just plug your CVM details and credentials into the tab labelled &quot;API Demo&quot;, hit the Go! button and let the demo page do the rest.</p>
+            <p>Simple!&nbsp;&nbsp;Just plug your CVM or cluster IP address details and credentials into the tab labelled &quot;API Demo&quot;, hit the Go! button and let the demo page do the rest.</p>
             <p class="h3">What do I need?</p>
             <br>
             <p>
@@ -122,8 +135,8 @@
             <p class="h3">What if ... ?</p>
             <br>
             <p>
-                ... I don't enter a cvm IP address?&nbsp;&nbsp;Sorry, this parameter is required.<br>
-                ... I don't enter a cvm port?&nbsp;&nbsp;We'll attempt to connect on the default port - 9440.<br>
+                ... I don't enter a cvm or cluster IP address?&nbsp;&nbsp;Sorry, this parameter is required.<br>
+                ... I don't enter a cvm or cluster port?&nbsp;&nbsp;We'll attempt to connect on the default port - 9440.<br>
                 ... I don't enter a cluster username?&nbsp;&nbsp;We'll attempt to connect with the default Prism username - 'admin'.<br>
                 ... I don't enter a cluster password?&nbsp;&nbsp;We'll attempt to connect with the default Prism username - 'admin'.
             </p>
