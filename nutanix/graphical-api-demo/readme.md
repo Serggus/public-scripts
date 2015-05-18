@@ -7,6 +7,7 @@ The graphical version shows a bit more information about the cluster used in the
 ## Prerequisites
 
 - PHP >= 5.4 (required for local web server support)
+- PHP with cURL support (required so the demo can read from a remote device)
 - A connection to a Nutanix cluster running NOS >= 4.1 (stats objects were different before 4.1)
 - Credentials for the relevant Nutanix cluster (read-only is fine)
 - A recent web browser

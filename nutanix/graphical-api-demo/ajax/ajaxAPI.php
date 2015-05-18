@@ -2,6 +2,7 @@
 
 require '../vendor/autoload.php';
 require '../libraries/chrisrnutanix/pChart.php';
+require '../libraries/chrisrnutanix/pData.php';
 require '../libraries/chrisrnutanix/chart.php';
 require '../libraries/chrisrnutanix/functions.php';
 require '../model/apiRequest.php';
@@ -10,7 +11,6 @@ try
 {
 
     /* get some info about the containers available in the cluster */
-
     $containerInfoRequest = new apiRequest(
         $_POST[ 'cluster-username' ] != '' ? $_POST[ 'cluster-username' ] : 'admin' ,
         $_POST[ 'cluster-password' ] != '' ? $_POST[ 'cluster-password' ] : 'admin',
@@ -82,6 +82,7 @@ try
     /* create the graph images */
     $ssdGraph = time() . '-ssd.png';
     $hddGraph = time() . '-hdd.png';
+
     createPieChart( $ssdChartData, $ssdGraph );
     createPieChart( $hddChartData, $hddGraph );
 
