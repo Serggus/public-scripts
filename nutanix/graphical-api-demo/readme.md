@@ -7,23 +7,28 @@ The graphical version shows a bit more information about the cluster used in the
 ## Prerequisites
 
 - PHP >= 5.4 (required for local web server support)
-- PHP with cURL support (required so the demo can read from a remote device)
+- PHP with cURL support (required so the demo can read from a remote device) - MAMP is recommended
 - A connection to a Nutanix cluster running NOS >= 4.1 (stats objects were different before 4.1)
-- Credentials for the relevant Nutanix cluster (read-only is fine)
+- Credentials for the relevant Nutanix cluster (read-only is fine, unless you want to create a container)
 - A recent web browser
 
 ## How to run - Web server
 
 - From a terminal, change to the directory containing the demo files (look for index.php)
-- Run 'php -S localhost:8000' (change the web server's port, if necessary)
+- If not using MAMP, run 'php -S localhost:8000' (change the web server's port, if necessary)
 - Browse to http://localhost:8000/ (and change the port, if you altered it in the previous step)
 
 ## What will it do?
 
 - Collect some basic info from the CVM or cluster IP address you specified
 - Create a couple of PNG files in {app_home}/ajax/charts that show SSD & HDD utilisation
+- Create a container, if you used that option
 
 ## Updates
+
+2015.05.20
+
+- Added ability to create a container
 
 2015.05.01
 

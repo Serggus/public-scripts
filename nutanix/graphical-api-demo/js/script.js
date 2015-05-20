@@ -1,3 +1,31 @@
+function cvmAddressEntered( inputElement )
+{
+    if( $( inputElement ).val() == '' )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+function showErrorDialog( dialogElement )
+{
+    $( dialogElement ).dialog({
+        resizable: false,
+        height:220,
+        width: 420,
+        modal: true
+    })
+}
+
+function getSerializedForm( formElement )
+{
+    var form = $( formElement );
+    return( form.serialize() );
+}
+
 $(document).ready(function(){
 
     /* Convert the HTML nav element to jQuery UI tabs */
@@ -6,6 +34,71 @@ $(document).ready(function(){
     /* Convert the configuration form's submit button to a jQuery UI button ... perrrrrrty  :) */
     $( 'input[type=submit]' ).button();
 
+    $( 'input#submit-container').on( 'click', function(e) {
+
+        $(function() {
+            $( "#dialog-confirm" ).dialog({
+                resizable: false,
+                height: 240,
+                width: 420,
+                modal: true,
+                buttons: {
+                    "Yes, do it!": function() {
+                        $( this ).dialog( "close" );
+                        if( cvmAddressEntered( '#cvm-address-container' ) && ( $( '#container-name').val() != '' ) )
+                        {
+                            /* A CVM address and container name were entered - we can carry on */
+
+                            /* Submit the request via AJAX */
+                            request = $.ajax({
+                                url: "/ajax/ajaxCreateContainer.php",
+                                type: "post",
+                                dataType: "json",
+                                data: getSerializedForm( '#container-form' )
+                            });
+
+                            request.success( function(data) {
+                                if( data.result == 'ok' )
+                                {
+                                    $( '#clusterError-container' ).slideUp( 300 );
+                                    $( '#clusterDetails-container' ).slideDown( 300 );
+
+                                }
+                                else
+                                {
+                                    $( '#clusterDetails-container' ).slideUp( 300 );
+                                    $( '#container-error-message' ).html( data.message);
+                                    $( '#clusterError-container' ).slideDown( 300 );
+                                }
+                            });
+
+                            request.done(function (response, textStatus, jqXHR){
+                                /* nothing here, yet ... maybe later */
+                            });
+
+                            request.fail(function ( jqXHR, textStatus, errorThrown )
+                            {
+                                /* Display an error message */
+                                alert( 'Unfortunately an error occurred while processing the request.  Status: ' + textStatus + ', Error Thrown: ' + errorThrown );
+                            });
+
+                        }
+                        else
+                        {
+                            /* CVM address or container name are missing */
+                            showErrorDialog( "#dialog_container_details" );
+                        }
+                    },
+                    "Nope, I'm bailing out!": function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        });
+
+        e.preventDefault();
+    });
+
     /* Sort out what to do when the form's submit button is clicked ... AJAX ftw */
     $( 'input#submit-go').on( 'click', function(e) {
 
@@ -13,29 +106,21 @@ $(document).ready(function(){
             Make sure a CVM address was entered
             Everything else can be guessed based on Nutanix defaults
          */
-        if( $( '#cvm-address' ).val() == '' )
+        if( !cvmAddressEntered( '#cvm-address' ) )
         {
             /* No CVM address was entered */
-            $( "#dialog_no_cvm_address" ).dialog({
-                resizable: false,
-                height:220,
-                width: 420,
-                modal: true
-            })
+            showErrorDialog( "#dialog_no_cvm_address" );
         }
         else
         {
             /* A CVM address was entered - we can carry on */
-
-            var form = $( '#config-form' );
-            var serializedData = form.serialize();
 
             /* Submit the request via AJAX */
             request = $.ajax({
                 url: "/ajax/ajaxAPI.php",
                 type: "post",
                 dataType: "json",
-                data: serializedData
+                data: getSerializedForm( '#config-form' )
             });
 
             request.success( function(data) {
@@ -53,8 +138,7 @@ $(document).ready(function(){
                         sn: { id: 'cluster-blockZeroSn' },
                         ip: { id: 'cluster-IP' },
                         nos: { id: 'cluster-nosVersion' },
-                        sed: { id: 'cluster-hasSED' },
-                        iops: { id: 'cluster-numIOPS' }
+                        sed: { id: 'cluster-hasSED' }
                     };
 
                     $.each( dataFields, function( key, field ) {
@@ -108,7 +192,7 @@ $(document).ready(function(){
             request.fail(function ( jqXHR, textStatus, errorThrown )
             {
                 /* Display an error message */
-                alert( 'Unfortunately an error occurred while process the request.  Status: ' + textStatus + ', Error Thrown: ' + errorThrown );
+                alert( 'Unfortunately an error occurred while processing the request.  Status: ' + textStatus + ', Error Thrown: ' + errorThrown );
             });
 
         }

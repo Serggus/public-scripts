@@ -39,14 +39,20 @@ class apiRequest
     var $connectionTimeout;
 
     /**
+     * Is this a GET or POST request?
+     */
+    var $method;
+
+    /**
      * @param string $username
      * @param string $password
      * @param $requestPath
      * @param $cvmAddress
      * @param string $cvmPort
      * @param int $connectionTimeout
+     * @param string $method
      */
-    public function __construct( $username = 'admin', $password ='admin', $cvmAddress, $cvmPort = '9440', $connectionTimeout = 3, $requestPath )
+    public function __construct( $username = 'admin', $password ='admin', $cvmAddress, $cvmPort = '9440', $connectionTimeout = 3, $requestPath, $method = 'GET' )
     {
         $this->username = $username;
         $this->password = $password;
@@ -54,6 +60,7 @@ class apiRequest
         $this->cvmAddress = $cvmAddress;
         $this->cvmPort = $cvmPort;
         $this->connectionTimeout = $connectionTimeout;
+        $this->method = $method;
     }
 
     /**
@@ -89,6 +96,48 @@ class apiRequest
                 ]
             ]
         );
+
+        /* return the response data in JSON format */
+        return( $response->json() );
+
+    }
+
+    /**
+     * Process an API POST request
+     */
+    public function doAPIPostRequest( $parameters )
+    {
+
+        $client = new GuzzleHttp\Client();
+
+        $request = $client->createRequest(
+            'POST',
+            sprintf( "https://%s:%s%s",
+                $this->cvmAddress,
+                $this->cvmPort,
+                $this->requestPath
+            ),
+            [
+                'config' => [
+                    'curl' => [
+                        CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+                        CURLOPT_USERPWD => $this->username . ':' . $this->password,
+                        CURLOPT_SSL_VERIFYHOST => false,
+                        CURLOPT_SSL_VERIFYPEER => false
+                    ],
+                    'verify' => false,
+                    'timeout' => $this->connectionTimeout,
+                    'connect_timeout' => $this->connectionTimeout,
+                ],
+                'headers' => [
+                    "Accept" => "application/json",
+                    "Content-Type" => "application/json"
+                ],
+                'body' => json_encode( $parameters )
+            ]
+        );
+
+        $response = $client->send($request);
 
         /* return the response data in JSON format */
         return( $response->json() );
