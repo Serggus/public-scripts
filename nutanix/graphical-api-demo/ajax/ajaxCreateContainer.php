@@ -3,18 +3,24 @@
 require '../vendor/autoload.php';
 require '../model/apiRequest.php';
 
+/**
+ * Check to see if a container name is already taken
+ *
+ * @param $containerName
+ * @return bool
+ */
 function containerExists( $containerName )
 {
     $checkContainerRequest = new apiRequest(
-        $_POST[ 'cluster-username-container' ] != '' ? $_POST[ 'cluster-username-container' ] : 'admin' ,
-        $_POST[ 'cluster-password-container' ] != '' ? $_POST[ 'cluster-password-container' ] : 'admin',
+        $_POST[ 'cluster-username-container' ],
+        $_POST[ 'cluster-password-container' ],
         $_POST[ 'cvm-address-container' ],
         $_POST[ 'cvm-port-container' ] != '' ? $_POST[ 'cvm-port-container' ] : '9440' ,
         3,
         '/PrismGateway/services/rest/v1/containers/'
     );
 
-    $containers = $checkContainerRequest->doAPIRequest();
+    $containers = $checkContainerRequest->doAPIRequest( null, GET );
     if( $containers[ 'metadata' ][ 'grandTotalEntities' ] == 0 )
     {
         return false;
@@ -38,15 +44,15 @@ try
 
     /* get some info about the storage pools in the cluster */
     $spInfoRequest = new apiRequest(
-        $_POST[ 'cluster-username-container' ] != '' ? $_POST[ 'cluster-username-container' ] : 'admin' ,
-        $_POST[ 'cluster-password-container' ] != '' ? $_POST[ 'cluster-password-container' ] : 'admin',
+        $_POST[ 'cluster-username-container' ],
+        $_POST[ 'cluster-password-container' ],
         $_POST[ 'cvm-address-container' ],
         $_POST[ 'cvm-port-container' ] != '' ? $_POST[ 'cvm-port-container' ] : '9440' ,
         3,
         '/PrismGateway/services/rest/v1/storage_pools/'
     );
 
-    $storage_pools = $spInfoRequest->doAPIRequest();
+    $storage_pools = $spInfoRequest->doAPIRequest( null, 'GET' );
     $spId = '';
     if( $storage_pools[ 'metadata' ][ 'grandTotalEntities' ] > 0 ) {
 
@@ -56,13 +62,16 @@ try
         if( !containerExists( $_POST[ 'container-name' ] ) )
         {
 
-            $parameters = ["name" => $_POST['container-name'], "storagePoolId" => $spId];
+            $parameters = [
+                'name' => $_POST['container-name'],
+                'storagePoolId' => $spId
+            ];
 
             // $parameters = [ "name" => 'temp1', "storagePoolId" => $spId ];
 
             $createContainerRequest = new apiRequest(
-                $_POST['cluster-username-container'] != '' ? $_POST['cluster-username-container'] : 'admin',
-                $_POST['cluster-password-container'] != '' ? $_POST['cluster-password-container'] : 'admin',
+                $_POST['cluster-username-container'],
+                $_POST['cluster-password-container'],
                 $_POST['cvm-address-container'],
                 $_POST['cvm-port-container'] != '' ? $_POST['cvm-port-container'] : '9440',
                 3,
@@ -70,7 +79,7 @@ try
                 'POST'
             );
 
-            $response = $createContainerRequest->doAPIPostRequest($parameters);
+            $response = $createContainerRequest->doAPIRequest( $parameters, 'POST');
 
             /* return a successful result */
             echo(json_encode(array(

@@ -26,6 +26,12 @@ The graphical version shows a bit more information about the cluster used in the
 
 ## Updates
 
+2015.05.21
+
+- Cleaned up API request method slightly
+- Added capability for API request method to process both GET and POST requests
+- Removed hard-coded default username & password (user is now required to enter both)
+
 2015.05.20
 
 - Added ability to create a container

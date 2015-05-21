@@ -52,7 +52,7 @@ class apiRequest
      * @param int $connectionTimeout
      * @param string $method
      */
-    public function __construct( $username = 'admin', $password ='admin', $cvmAddress, $cvmPort = '9440', $connectionTimeout = 3, $requestPath, $method = 'GET' )
+    public function __construct( $username, $password, $cvmAddress, $cvmPort = '9440', $connectionTimeout = 3, $requestPath, $method = 'GET' )
     {
         $this->username = $username;
         $this->password = $password;
@@ -64,54 +64,20 @@ class apiRequest
     }
 
     /**
-     * Process the API request based on the current apiRequest instance
+     * Process an API request
+     * Supports both GET and POST requests
      *
+     * @param $parameters
+     * @param $method
      * @return mixed
      */
-    public function doAPIRequest()
-    {
-
-        $client = new GuzzleHttp\Client();
-
-        $response = $client->get(
-            sprintf( "https://%s:%s%s",
-                $this->cvmAddress,
-                $this->cvmPort,
-                $this->requestPath
-                ),
-            [
-                'config' => [
-                    'curl' => [
-                        CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-                        CURLOPT_USERPWD  => $this->username . ':' . $this->password,
-                        CURLOPT_SSL_VERIFYHOST => false,
-                        CURLOPT_SSL_VERIFYPEER => false
-                    ],
-                    'headers' => [
-                        'Accept' => 'application/json'
-                    ],
-                    'verify' => false,
-                    'timeout' => $this->connectionTimeout,
-                    'connect_timeout' => $this->connectionTimeout,
-                ]
-            ]
-        );
-
-        /* return the response data in JSON format */
-        return( $response->json() );
-
-    }
-
-    /**
-     * Process an API POST request
-     */
-    public function doAPIPostRequest( $parameters )
+    public function doAPIRequest( $parameters, $method )
     {
 
         $client = new GuzzleHttp\Client();
 
         $request = $client->createRequest(
-            'POST',
+            $method,
             sprintf( "https://%s:%s%s",
                 $this->cvmAddress,
                 $this->cvmPort,

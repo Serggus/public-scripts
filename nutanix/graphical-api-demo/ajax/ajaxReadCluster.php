@@ -12,8 +12,8 @@ try
 
     /* get some info about the containers available in the cluster */
     $containerInfoRequest = new apiRequest(
-        $_POST[ 'cluster-username' ] != '' ? $_POST[ 'cluster-username' ] : 'admin' ,
-        $_POST[ 'cluster-password' ] != '' ? $_POST[ 'cluster-password' ] : 'admin',
+        $_POST[ 'cluster-username' ],
+        $_POST[ 'cluster-password' ],
         $_POST[ 'cvm-address' ],
         $_POST[ 'cvm-port' ] != '' ? $_POST[ 'cvm-port' ] : '9440' ,
         3,
@@ -21,7 +21,8 @@ try
     );
 
     /* get the response data in JSON format */
-    $containerInfo = $containerInfoRequest->doAPIRequest();
+    // $containerInfo = $containerInfoRequest->doAPIRequest2();
+    $containerInfo = $containerInfoRequest->doAPIRequest( null, 'GET' );
     $containers = array();
     foreach( $containerInfo[ 'entities' ] as $container )
     {
@@ -38,8 +39,8 @@ try
 
     /* setup the request for the main cluster info query */
     $clusterInfoRequest = new apiRequest(
-        $_POST[ 'cluster-username' ] != '' ? $_POST[ 'cluster-username' ] : 'admin' ,
-        $_POST[ 'cluster-password' ] != '' ? $_POST[ 'cluster-password' ] : 'admin',
+        $_POST[ 'cluster-username' ],
+        $_POST[ 'cluster-password' ],
         $_POST[ 'cvm-address' ],
         $_POST[ 'cvm-port' ] != '' ? $_POST[ 'cvm-port' ] : '9440' ,
         3,
@@ -47,7 +48,7 @@ try
     );
 
     /* get the response data in JSON format */
-    $clusterInfo = $clusterInfoRequest->doAPIRequest();
+    $clusterInfo = $clusterInfoRequest->doAPIRequest( null, 'GET' );
 
     /* get some storage info so we can draw some graphs */
     $storage_info = [

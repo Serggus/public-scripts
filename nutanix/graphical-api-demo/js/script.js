@@ -117,7 +117,7 @@ $(document).ready(function(){
 
             /* Submit the request via AJAX */
             request = $.ajax({
-                url: "/ajax/ajaxAPI.php",
+                url: "/ajax/ajaxReadCluster.php",
                 type: "post",
                 dataType: "json",
                 data: getSerializedForm( '#config-form' )

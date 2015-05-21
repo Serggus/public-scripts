@@ -195,8 +195,7 @@
                 ... I don't enter a cvm or cluster IP address?&nbsp;&nbsp;Sorry, this parameter is required.<br>
                 ... I don't enter a container name?&nbsp;&nbsp;Sorry, this parameter is required, if you are creating a container.<br>
                 ... I don't enter a cvm or cluster port?&nbsp;&nbsp;We'll attempt to connect on the default port - 9440.<br>
-                ... I don't enter a cluster username?&nbsp;&nbsp;We'll attempt to connect with the default Prism username - 'admin'.<br>
-                ... I don't enter a cluster password?&nbsp;&nbsp;We'll attempt to connect with the default Prism username - 'admin'.
+                ... I don't enter a cluster username or password?&nbsp;&nbsp;Sorry - authentication is required to use these demos.
             </p>
             <p class="h3">Who can I contact to ask questions?</p>
             <br>
