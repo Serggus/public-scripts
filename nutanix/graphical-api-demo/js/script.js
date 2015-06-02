@@ -34,6 +34,93 @@ $(document).ready(function(){
     /* Convert the configuration form's submit button to a jQuery UI button ... perrrrrrty  :) */
     $( 'input[type=submit]' ).button();
 
+    $( '#server-profile').on( 'change', function(e) {
+        switch( $( '#server-profile' ).val() )
+        {
+            case 'exch':
+                $( 'div#profile-exchange-spec').slideDown( 300 );
+                $( 'div#profile-dc-spec').slideUp( 300 );
+                $( 'div#profile-web-spec').slideUp( 300 );
+                break;
+            case 'dc':
+                $( 'div#profile-exchange-spec').slideUp( 300 );
+                $( 'div#profile-dc-spec').slideDown( 300 );
+                $( 'div#profile-web-spec').slideUp( 300 );
+                break;
+            case 'lamp':
+                $( 'div#profile-exchange-spec').slideUp( 300 );
+                $( 'div#profile-dc-spec').slideUp( 300 );
+                $( 'div#profile-web-spec').slideDown( 300 );
+                break;
+        }
+        e.preventDefault();
+    });
+
+    $( 'input#submit-msp').on( 'click', function(e) {
+
+        $(function() {
+            $( "#dialog-confirm" ).dialog({
+                resizable: false,
+                height: 240,
+                width: 420,
+                modal: true,
+                buttons: {
+                    "Yes, do it!": function() {
+                        $( this ).dialog( "close" );
+                        if( cvmAddressEntered( '#cvm-address' ) && ( $( '#server-name').val() != '' ) )
+                        {
+                            /* A CVM address and VM name were entered - we can carry on */
+
+                            /* Submit the request via AJAX */
+                            request = $.ajax({
+                                url: "../ajax/ajaxCreateVM.php",
+                                type: "post",
+                                dataType: "json",
+                                data: getSerializedForm( '#config-form' )
+                            });
+
+                            request.success( function(data) {
+                                if( data.result == 'ok' )
+                                {
+                                    $( '#clusterError-msp' ).slideUp( 300 );
+                                    $( '#clusterDetails-msp' ).slideDown( 300 );
+
+                                }
+                                else
+                                {
+                                    $( '#clusterDetails-msp' ).slideUp( 300 );
+                                    $( '#vm-error-message' ).html( data.message);
+                                    $( '#clusterError-msp' ).slideDown( 300 );
+                                }
+                            });
+
+                            request.done(function (response, textStatus, jqXHR){
+                                /* nothing here, yet ... maybe later */
+                            });
+
+                            request.fail(function ( jqXHR, textStatus, errorThrown )
+                            {
+                                /* Display an error message */
+                                alert( 'Unfortunately an error occurred while processing the request.  Status: ' + textStatus + ', Error Thrown: ' + errorThrown );
+                            });
+
+                        }
+                        else
+                        {
+                            /* CVM address or container name are missing */
+                            showErrorDialog( "#dialog_container_details" );
+                        }
+                    },
+                    "Nope, I'm bailing out!": function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+        });
+
+        e.preventDefault();
+    });
+
     $( 'input#submit-container').on( 'click', function(e) {
 
         $(function() {
@@ -45,16 +132,18 @@ $(document).ready(function(){
                 buttons: {
                     "Yes, do it!": function() {
                         $( this ).dialog( "close" );
-                        if( cvmAddressEntered( '#cvm-address-container' ) && ( $( '#container-name').val() != '' ) )
+                        if( cvmAddressEntered( '#cvm-address' ) && ( $( '#container-name').val() != '' ) )
                         {
                             /* A CVM address and container name were entered - we can carry on */
 
+                            console.log( getSerializedForm( '#config-form' ) );
+
                             /* Submit the request via AJAX */
                             request = $.ajax({
-                                url: "/ajax/ajaxCreateContainer.php",
+                                url: "../ajax/ajaxCreateContainer.php",
                                 type: "post",
                                 dataType: "json",
-                                data: getSerializedForm( '#container-form' )
+                                data: getSerializedForm( '#config-form' )
                             });
 
                             request.success( function(data) {
@@ -117,7 +206,7 @@ $(document).ready(function(){
 
             /* Submit the request via AJAX */
             request = $.ajax({
-                url: "/ajax/ajaxReadCluster.php",
+                url: "../ajax/ajaxReadCluster.php",
                 type: "post",
                 dataType: "json",
                 data: getSerializedForm( '#config-form' )
@@ -145,8 +234,8 @@ $(document).ready(function(){
                         $( 'span#' + field.id ).html( data[ field.id ] );
                     });
 
-                    $( 'span#ssd_graph').html( '<img src="/ajax/charts/' + data.ssdGraph + '">' );
-                    $( 'span#hdd_graph').html( '<img src="/ajax/charts/' + data.hddGraph + '">' );
+                    $( 'span#ssd_graph').html( '<img src="../ajax/charts/' + data.ssdGraph + '">' );
+                    $( 'span#hdd_graph').html( '<img src="../ajax/charts/' + data.hddGraph + '">' );
 
                     $( 'span#hypervisors').html( '' );
                     $( data.hypervisorTypes ).each( function( index, item ) {

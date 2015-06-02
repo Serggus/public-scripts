@@ -23,8 +23,15 @@ The graphical version shows a bit more information about the cluster used in the
 - Collect some basic info from the CVM or cluster IP address you specified
 - Create a couple of PNG files in {app_home}/ajax/charts that show SSD & HDD utilisation
 - Create a container, if you used that option
+- Create a VM, if your cluster is running KVM/Acropolis
 
 ## Updates
+
+2016.06.02
+
+- Created a common credential and CVM/cluster details form above the demos
+- Added the ability to create a VM through the API ... KVM/Acropolis required!
+- Changed entire demo so it works with relative directories
 
 2015.05.21
 

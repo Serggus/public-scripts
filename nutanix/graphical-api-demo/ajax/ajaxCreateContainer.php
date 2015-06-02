@@ -12,10 +12,10 @@ require '../model/apiRequest.php';
 function containerExists( $containerName )
 {
     $checkContainerRequest = new apiRequest(
-        $_POST[ 'cluster-username-container' ],
-        $_POST[ 'cluster-password-container' ],
-        $_POST[ 'cvm-address-container' ],
-        $_POST[ 'cvm-port-container' ] != '' ? $_POST[ 'cvm-port-container' ] : '9440' ,
+        $_POST[ 'cluster-username' ],
+        $_POST[ 'cluster-password' ],
+        $_POST[ 'cvm-address' ],
+        $_POST[ 'cvm-port' ] != '' ? $_POST[ 'cvm-port' ] : '9440' ,
         3,
         '/PrismGateway/services/rest/v1/containers/'
     );
@@ -44,10 +44,10 @@ try
 
     /* get some info about the storage pools in the cluster */
     $spInfoRequest = new apiRequest(
-        $_POST[ 'cluster-username-container' ],
-        $_POST[ 'cluster-password-container' ],
-        $_POST[ 'cvm-address-container' ],
-        $_POST[ 'cvm-port-container' ] != '' ? $_POST[ 'cvm-port-container' ] : '9440' ,
+        $_POST[ 'cluster-username' ],
+        $_POST[ 'cluster-password' ],
+        $_POST[ 'cvm-address' ],
+        $_POST[ 'cvm-port' ] != '' ? $_POST[ 'cvm-port' ] : '9440' ,
         3,
         '/PrismGateway/services/rest/v1/storage_pools/'
     );
@@ -70,10 +70,10 @@ try
             // $parameters = [ "name" => 'temp1', "storagePoolId" => $spId ];
 
             $createContainerRequest = new apiRequest(
-                $_POST['cluster-username-container'],
-                $_POST['cluster-password-container'],
-                $_POST['cvm-address-container'],
-                $_POST['cvm-port-container'] != '' ? $_POST['cvm-port-container'] : '9440',
+                $_POST['cluster-username'],
+                $_POST['cluster-password'],
+                $_POST['cvm-address'],
+                $_POST['cvm-port'] != '' ? $_POST['cvm-port'] : '9440',
                 3,
                 '/PrismGateway/services/rest/v1/containers/',
                 'POST'

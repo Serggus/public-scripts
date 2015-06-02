@@ -4,24 +4,22 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/css/smoothness/jquery-ui.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/master.css">
+    <link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/master.css">
     <title>Graphical Nutanix API Demo</title>
 </head>
 
 <body style="margin-top: 10px;">
 
+<form id="config-form">
+
 <div class="col-md-12">
-    <div id="tabs">
-        <ul>
-            <li><a href="#tabs-read"><i class="fa fa-desktop">&nbsp;</i>API Demo - GET Request (Read)</a></li>
-            <li><a href="#tabs-write"><i class="fa fa-desktop">&nbsp;</i>API Demo - POST Request (Write)</a></li>
-            <li><a href="#tabs-help"><i class="fa fa-question-circle">&nbsp;</i>Help</a></li>
-        </ul>
-        <div id="tabs-read">
-            <form id="config-form">
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Credentials</strong></div>
+        <div class="panel-body">
                 <div class='row'>
                     <div class='col-md-2'>
                         <label for="cvm-address">CVM Address</label>
@@ -44,6 +42,24 @@
                         <input class="form-control" type="text" name="cluster-timeout" id="cluster-timeout" value="3" />
                     </div>
                 </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            The credentials above will be used for all demos available below.&nbsp;&nbsp;When using the &quot;write&quot; demos, please make sure your credentials have the appropriate access to the selected CVM/cluster.
+        </div>
+    </div>
+
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-read"><i class="fa fa-desktop">&nbsp;</i>API Demo - GET Request (Read)</a></li>
+            <li><a href="#tabs-write"><i class="fa fa-desktop">&nbsp;</i>API Demo - POST Request (Write)</a></li>
+            <li><a href="#tabs-msp" style="font-weight: bold;"><i class="fa fa-desktop">&nbsp;</i>API Demo - Self Service (Write)</a></li>
+            <li><a href="#tabs-help"><i class="fa fa-question-circle">&nbsp;</i>Help</a></li>
+        </ul>
+        <div id="tabs-read">
+            <p>This part of the demo shows how we can leverage the Nutanix API to get cluster information.</p>
+            <p>For now, we'll collect some basic info and show it in the panels below.</p>
+            <form id="config-form">
                 <div class="row" style="padding-top: 15px;">
                     <div class="col-md-2 col-md-offset-5">
                         <input type="submit" id="submit-go" class="form-control" value="Go!">
@@ -126,42 +142,17 @@
             <p>This part of the demo shows how we can leverage the Nutanix API to make cluster changes.&nbsp;&nbsp;Please use caution when making cluster changes via scripts or custom applications, especially when running against production clusters.</p>
             <p>For now, we'll create a new simple container in the first Storage Pool the cluster finds.</p>
             <br>
-            <form id="container-form">
-                <div class='row'>
-                    <div class='col-md-2'>
-                        <label for="cvm-address-container">CVM Address</label>
-                        <input class="form-control" type="text" name="cvm-address-container" id="cvm-address-container" />
-                    </div>
-                    <div class='col-md-2'>
-                        <label for="cvm-port-container">CVM Port</label>
-                        <input class="form-control" type="text" name="cvm-port-container" id="cvm-port-container" value="9440" />
-                    </div>
-                    <div class='col-md-2'>
-                        <label for="cluster-username-container">Cluster Username</label>
-                        <input class="form-control" type="text" name="cluster-username-container" id="cluster-username-container" />
-                    </div>
-                    <div class='col-md-2'>
-                        <label for="cluster-password-container">Cluster Password</label>
-                        <input class="form-control" type="password" name="cluster-password-container" id="cluster-password-container" />
-                    </div>
-                    <div class='col-md-2'>
-                        <label for="cluster-timeout-container">Timeout (Seconds)</label>
-                        <input class="form-control" type="text" name="cluster-timeout-container" id="cluster-timeout-container" value="3" />
-                    </div>
+            <div class='row'>
+                <div class='col-md-10'>
+                    <label for="container-name">Container Name</label>
+                    <input class="form-control" type="text" name="container-name" id="container-name" />
                 </div>
-                <br>
-                <div class='row'>
-                    <div class='col-md-10'>
-                        <label for="container-name">Container Name</label>
-                        <input class="form-control" type="text" name="container-name" id="container-name" />
-                    </div>
+            </div>
+            <div class="row" style="padding-top: 15px;">
+                <div class="col-md-2 col-md-offset-5">
+                    <input type="submit" id="submit-container" class="form-control" value="Create Container">
                 </div>
-                <div class="row" style="padding-top: 15px;">
-                    <div class="col-md-2 col-md-offset-5">
-                        <input type="submit" id="submit-container" class="form-control" value="Create Container">
-                    </div>
-                </div>
-            </form>
+            </div>
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-8 col-md-offset-2">
 
@@ -176,10 +167,53 @@
             </div>
         </div>
 
+        <div id="tabs-msp">
+            <p>This is where leveraging a published API can get pretty cool.&nbsp;&nbsp;Using the fields below we are now able to implement a 'single click' process that will automate the creation of a VM that matches a particular specification.&nbsp;&nbsp;Please use caution when making cluster changes via scripts or custom applications, especially when running against production clusters.</p>
+            <p>In these examples the server specifications are fairly arbitrary but could be easily modified to suit a real self-service application.</p>
+            <div class="row" style="padding-top: 15px;">
+                <div class="col-md-4">
+                    <label for="server-profile">Select Server Profile:</label>
+                    <select name="server-profile" id="server-profile" class="form-control">
+                        <option selected id="profile-exchange" value="exch">Microsoft Exchange 2013 Mailbox</option>
+                        <option id="profile-dc" value="dc">Domain Controller</option>
+                        <option id="profile-web" value="lamp">Web Server (LAMP)</option>
+                    </select>
+                    <div class="get-profile" style="margin-top: 3px; font-size: 75%;">
+                        <div id="profile-exchange-spec">&raquo;&nbsp;Microsoft Exchange specs: 2x CPU, 8GB RAM, 1x 120GB SCSI disk, 1x 500GB SCSI disk</div>
+                        <div id="profile-dc-spec" style="display: none;">&raquo;&nbsp;Domain Controller specs: 1x CPU, 2GB RAM, 1x 250GB SCSI disk</div>
+                        <div id="profile-web-spec" style="display: none;">&raquo;&nbsp;Web Server specs: 2x CPU, 4GB RAM, 1x 40GB disk</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <div class="col-md-4">
+                    <label for="server-name">Enter Server Name:</label>
+                    <input class="form-control" type="text" name="server-name" id="server-name" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4" style="margin-top: 10px;">
+                    <input type="submit" id="submit-msp" class="form-control" value="Create VM">
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <div class="col-md-8 col-md-offset-2">
+
+                    <div id="clusterDetails-msp" class="none">
+                        <div class="panel panel-success" style="text-align: center; padding: 10px 0; margin: 20px 0 0 0; background: #D6E9E0;">VM creation request submitted successfully!&nbsp;&nbsp;Why not go and have a look at Prism, now?&nbsp;&nbsp;:)</div>
+                    </div>
+                    <div id="clusterError-msp" class="none">
+                        <div class="panel panel-danger" id="vm-error-message" style="text-align: center; padding: 10px 0; margin: 20px 0 0 0; background: #FF90A2;">Task request could not be submitted at this time.&nbsp;&nbsp;:(</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <div id="tabs-help">
             <p class="h3">How do I use this demo?</p>
             <br>
-            <p>Simple!&nbsp;&nbsp;Just plug your CVM or cluster IP address details and credentials into the relevant form, hit the &quot;Go!&quot; or &quot;Create Container&quot; button and let the demo page do the rest.</p>
+            <p>Simple!&nbsp;&nbsp;Just plug your CVM or cluster IP address details, credentials into the form at the top of the screen, select the tab for what you want to demo, enter the required info &amp; hit the appropriate submit button and let the demo page do the rest.</p>
             <p class="h3">What do I need?</p>
             <br>
             <p>
@@ -194,6 +228,7 @@
             <p>
                 ... I don't enter a cvm or cluster IP address?&nbsp;&nbsp;Sorry, this parameter is required.<br>
                 ... I don't enter a container name?&nbsp;&nbsp;Sorry, this parameter is required, if you are creating a container.<br>
+                ... I don't enter a VM name?&nbsp;&nbsp;Sorry, this parameter is required, if you are creating a VM.<br>
                 ... I don't enter a cvm or cluster port?&nbsp;&nbsp;We'll attempt to connect on the default port - 9440.<br>
                 ... I don't enter a cluster username or password?&nbsp;&nbsp;Sorry - authentication is required to use these demos.
             </p>
@@ -203,6 +238,8 @@
         </div>
     </div>
 </div>
+
+</form>
 
 <div id="dialog_no_cvm_address" class="none">
     <p class="h2">Awww!</p>
@@ -218,9 +255,9 @@
     <p><br><i class="fa fa-2x fa-question-circle"></i>&nbsp;Even though this is a demo application, you are about to make <strong>REAL</strong> changes to the cluster.&nbsp;&nbsp;Are you sure you want to do that?</p>
 </div>
 
-<script src="/js/jquery-1.11.2.min.js"></script>
-<script src="/css/smoothness/jquery-ui.min.js"></script>
-<script src="/js/script.js"></script>
+<script src="js/jquery-1.11.2.min.js"></script>
+<script src="css/smoothness/jquery-ui.min.js"></script>
+<script src="js/script.js"></script>
 
 <script>
 
